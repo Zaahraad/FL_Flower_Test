@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import torch
 
-from pytorchexample.task import HORIZON, SEQ_LEN, Net, load_data, get_building_files
+from FL_EnergyForecasting.task import HORIZON, SEQ_LEN, Net, load_data, get_building_files
 
 # Usage: python predict.py [model_path] [stride]
 # stride = plot every Nth test sequence (24 -> one plot per day, 1 -> every sequence)

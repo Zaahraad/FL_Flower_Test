@@ -5,7 +5,7 @@ from flwr.app import ArrayRecord, ConfigRecord, Context
 from flwr.serverapp import Grid, ServerApp
 from flwr.serverapp.strategy import FedAvg
 
-from pytorchexample.task import (
+from FL_EnergyForecasting.task import (
     Net,
     evaluate_all_test_buildings,
 )

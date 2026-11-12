@@ -4,7 +4,7 @@ import torch
 from flwr.app import ArrayRecord, Context, Message, MetricRecord, RecordDict
 from flwr.clientapp import ClientApp
 
-from pytorchexample.task import Net, load_data, train, evaluate
+from FL_EnergyForecasting.task import Net, load_data, train, evaluate
 
 
 app = ClientApp()

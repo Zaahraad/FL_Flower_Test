@@ -1,0 +1,31 @@
+building_id,partition_id,missing,longest_gap,zero,longest_flat,mean_kwh,site_id,primaryspaceusage,sqm,timezone
+Bear_education_Bob,0,0.00011399908800729594,1,0.0,1,128.5693519724091,Bear,Education,28360.3,US/Pacific
+Bear_education_Darrell,1,0.00011399908800729594,1,0.0,2,39.2829802132026,Bear,Education,5234.4,US/Pacific
+Bear_education_Elise,2,0.00011399908800729594,1,0.0,2,145.29194889978336,Bear,Education,20664.8,US/Pacific
+Bear_education_Iris,3,0.00011399908800729594,1,0.0,2,45.50789976057462,Bear,Education,5456.5,US/Pacific
+Bear_education_Lila,4,0.00011399908800729594,1,0.0,2,214.48741520921214,Bear,Education,11483.9,US/Pacific
+Fox_assembly_Tony,5,0.00011399908800729594,1,0.0,2,81.93042184471554,Fox,Entertainment/public assembly,7231.9,US/Mountain
+Fox_education_Andre,6,5.699954400364797e-05,1,0.0,2,454.5828592601037,Fox,Education,17044.0,US/Mountain
+Fox_education_Ollie,7,0.00011399908800729594,1,0.0,2,107.93274883137613,Fox,Education,6698.5,US/Mountain
+Fox_education_Ray,8,0.00011399908800729594,1,0.0,2,47.59754988028731,Fox,Education,1185.5,US/Mountain
+Fox_lodging_Helen,9,5.699954400364797e-05,1,0.0,2,354.0070529555948,Fox,Lodging/residential,51394.9,US/Mountain
+Hog_assembly_Jasmine,10,0.0,0,0.0,3,85.04352986776107,Hog,Entertainment/public assembly,5314.1,US/Central
+Hog_education_Madge,11,0.0,0,0.0,3,89.80351493388052,Hog,Education,6786.0,US/Central
+Hog_office_Valda,12,0.0,0,0.0,2,29.019845588235295,Hog,Office,5255.4,US/Central
+Hog_public_Octavia,13,0.0,0,0.0,2,195.50860556315547,Hog,Public services,18554.8,US/Central
+Hog_services_Adrianna,14,0.0,0,0.0,2,249.3860986092111,Hog,Services,4696.4,US/Central
+Moose_education_Ricardo,15,0.0,0,0.0,4,308.8911676470588,Moose,Education,14000.0,US/Eastern
+Peacock_education_Robbie,16,0.00022799817601459188,2,0.0,2,43.91588278221209,Peacock,Education,5416.9,US/Eastern
+Peacock_education_Yolanda,17,0.00022799817601459188,2,0.0,2,37.502205832383126,Peacock,Education,3675.1,US/Eastern
+Peacock_lodging_Lou,18,0.0003989968080255358,2,0.0,2,117.80694717454524,Peacock,Lodging/residential,11895.7,US/Eastern
+Rat_education_Lee,19,0.0001709986320109439,1,0.0,2,403.23247363320223,Rat,Education,26291.5,US/Eastern
+Rat_education_Theo,20,0.0001709986320109439,1,0.0,2,555.969565589191,Rat,Education,26830.4,US/Eastern
+Rat_office_Colby,21,0.00022799817601459188,1,0.0,2,2128.527409350057,Rat,Office,79000.4,US/Eastern
+Rat_office_Jamal,22,0.00022799817601459188,1,0.0,2,938.0420324971494,Rat,Office,27406.4,US/Eastern
+Rat_public_Kimber,23,0.00022799817601459188,1,0.0,2,227.70542075256557,Rat,Public services,9587.6,US/Eastern
+Robin_lodging_Janie,24,0.0,0,0.0,2,118.7833542122663,Robin,Lodging/residential,6193.0,Europe/London
+Wolf_education_Cheryl,25,5.699954400364797e-05,1,0.0,2,131.17929943567236,Wolf,Education,25605.0,Europe/Dublin
+Wolf_education_Laurinda,26,5.699954400364797e-05,1,0.0,1,217.1513526762811,Wolf,Education,18706.0,Europe/Dublin
+Wolf_public_Norma,27,5.699954400364797e-05,1,0.0,2,146.63433518212392,Wolf,Public services,23500.0,Europe/Dublin
+Wolf_retail_Marcella,28,5.699954400364797e-05,1,0.0,3,7.004368836572993,Wolf,Retail,363.0,Europe/Dublin
+Wolf_retail_Toshia,29,5.699954400364797e-05,1,0.0,2,70.97483654449069,Wolf,Retail,4209.0,Europe/Dublin

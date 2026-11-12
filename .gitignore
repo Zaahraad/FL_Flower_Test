@@ -218,3 +218,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Datasets (recreate with scripts/prepare_bdg2.py)
+data/raw/
+Data/
