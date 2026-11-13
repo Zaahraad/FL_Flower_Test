@@ -35,7 +35,7 @@ fraction-evaluate = 1.0
 local-epochs = 10
 batch-size = 64
 learning-rate = 0.001
-num-buildings = 2
+num-buildings = 30
 # Forecasting setup: seq-len past hours in, horizon future hours out.
 seq-len = 168
 horizon = 36

@@ -78,12 +78,10 @@ def get_building_files(data_dir):
             "Set it in pyproject.toml or with "
             "--run-config \"data-dir='/abs/path/to/Data'\"."
         )
-    files = sorted(data_dir.glob("*.csv"))
-    print(f"Data directory: {data_dir}")
-    print(f"Found {len(files)} CSV files:")
-    for file in files:
-        print(f"  {file.name}")
-    return files
+    # No printing here: every client calls this each round, so a file
+    # listing would flood the logs. The building-to-client mapping is in
+    # data/selected_buildings.csv.
+    return sorted(data_dir.glob("*.csv"))
 
 
 def load_data(
