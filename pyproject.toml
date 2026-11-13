@@ -9,9 +9,10 @@ description = "Federated Learning with PyTorch and Flower (Quickstart Example)"
 license = {file = "LICENSE"}
 dependencies = [
     "flwr[simulation]>=1.36.0",
-    "flwr-datasets[vision]>=0.6.1",
     "torch==2.10.0",
-    "torchvision==0.25.0",
+    "numpy>=2.0",
+    "pandas>=2.2",
+    "matplotlib>=3.8",
 ]
 
 [tool.hatch.build.targets.wheel]
@@ -35,4 +36,11 @@ local-epochs = 10
 batch-size = 64
 learning-rate = 0.001
 num-buildings = 2
+# Forecasting setup: seq-len past hours in, horizon future hours out.
+seq-len = 168
+horizon = 36
+# Absolute paths: Flower runs the apps from a copy under ~/.flwr/apps/.
+# Change these to your own clone's location.
+data-dir = "/home/zahra/fl-school-2026/quickstart-pytorch/Data"
+output-dir = "/home/zahra/fl-school-2026/quickstart-pytorch/results"
 

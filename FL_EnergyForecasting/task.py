@@ -8,48 +8,49 @@ import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
 
 
-# Project root / data/
-DATA_DIR = Path("/home/zahra/fl-school-2026/quickstart-pytorch/Data")
-
-SEQ_LEN = 168
-HORIZON = 24
+# Data path, input length (seq-len) and forecast horizon come from
+# [tool.flwr.app.config] in pyproject.toml.
 TRAIN_RATIO = 0.70
 VAL_RATIO = 0.15
 BATCH_SIZE = 64
 
 
 class Net(nn.Module):
-    """LSTM forecasting model: 168 hourly inputs -> 24 predictions."""
+    """LSTM forecasting model: seq_len hourly inputs -> horizon predictions."""
 
-    def __init__(self, hidden_size: int = 64):
+    def __init__(self, horizon: int, hidden_size: int = 64):
         super().__init__()
         self.lstm = nn.LSTM(
             input_size=1,
             hidden_size=hidden_size,
             batch_first=True,
         )
-        self.fc = nn.Linear(hidden_size, HORIZON)
+        self.fc = nn.Linear(hidden_size, horizon)
 
     def forward(self, x):
-        # x: [batch, 168, 1]
+        # x: [batch, seq_len, 1]
         output, _ = self.lstm(x)
-        return self.fc(output[:, -1, :])  # [batch, 24]
+        return self.fc(output[:, -1, :])  # [batch, horizon]
 
 
 class ForecastDataset(Dataset):
-    """Create input windows and future 24-hour targets."""
+    """Create seq_len-hour input windows and future horizon-hour targets."""
 
     def __init__(
         self,
         values: np.ndarray,
         target_start: int,
         target_end: int,
+        seq_len: int,
+        horizon: int,
     ):
         self.values = values
+        self.seq_len = seq_len
+        self.horizon = horizon
         self.indices = list(
             range(
-                max(SEQ_LEN, target_start),
-                target_end - HORIZON + 1,
+                max(seq_len, target_start),
+                target_end - horizon + 1,
             )
         )
 
@@ -58,8 +59,8 @@ class ForecastDataset(Dataset):
 
     def __getitem__(self, idx):
         i = self.indices[idx]
-        x = self.values[i - SEQ_LEN:i]
-        y = self.values[i:i + HORIZON]
+        x = self.values[i - self.seq_len:i]
+        y = self.values[i:i + self.horizon]
 
         return (
             torch.tensor(x, dtype=torch.float32).unsqueeze(-1),
@@ -67,9 +68,18 @@ class ForecastDataset(Dataset):
         )
 
 
-def get_building_files():
-    files = sorted(DATA_DIR.glob("*.csv"))
-    print(f"Data directory: {DATA_DIR}")
+def get_building_files(data_dir):
+    data_dir = Path(data_dir)
+    # Flower runs the apps from a copy under ~/.flwr/apps/, so a relative
+    # path would not point at the project folder.
+    if not data_dir.is_absolute() or not data_dir.is_dir():
+        raise ValueError(
+            f"data-dir must be an existing absolute path, got '{data_dir}'. "
+            "Set it in pyproject.toml or with "
+            "--run-config \"data-dir='/abs/path/to/Data'\"."
+        )
+    files = sorted(data_dir.glob("*.csv"))
+    print(f"Data directory: {data_dir}")
     print(f"Found {len(files)} CSV files:")
     for file in files:
         print(f"  {file.name}")
@@ -79,14 +89,17 @@ def get_building_files():
 def load_data(
     partition_id: int,
     num_partitions: int,
+    data_dir,
+    seq_len: int,
+    horizon: int,
     batch_size: int = BATCH_SIZE,
 ):
     """Load one building and split it chronologically."""
-    files = get_building_files()
+    files = get_building_files(data_dir)
 
     if len(files) != num_partitions:
         raise ValueError(
-            f"Found {len(files)} CSV files in {DATA_DIR}, "
+            f"Found {len(files)} CSV files in {data_dir}, "
             f"but Flower configured {num_partitions} clients. "
             "Use one CSV per client and match the counts."
         )
@@ -138,15 +151,15 @@ def load_data(
     train_end = int(n * TRAIN_RATIO)
     val_end = int(n * (TRAIN_RATIO + VAL_RATIO))
 
-    if train_end <= SEQ_LEN + HORIZON:
+    if train_end <= seq_len + horizon:
         raise ValueError(
             f"{path.name} has too few training observations."
         )
-    if val_end - train_end < HORIZON:
+    if val_end - train_end < horizon:
         raise ValueError(
             f"{path.name} has too few validation observations."
         )
-    if n - val_end < HORIZON:
+    if n - val_end < horizon:
         raise ValueError(
             f"{path.name} has too few test observations."
         )
@@ -159,9 +172,9 @@ def load_data(
 
     values = (raw - mean) / std
 
-    train_ds = ForecastDataset(values, SEQ_LEN, train_end)
-    val_ds = ForecastDataset(values, train_end, val_end)
-    test_ds = ForecastDataset(values, val_end, n)
+    train_ds = ForecastDataset(values, seq_len, train_end, seq_len, horizon)
+    val_ds = ForecastDataset(values, train_end, val_end, seq_len, horizon)
+    test_ds = ForecastDataset(values, val_end, n, seq_len, horizon)
     # Kept so predictions can be mapped back to real units and timestamps.
     test_ds.mean, test_ds.std, test_ds.times = mean, std, df.index
 
@@ -249,13 +262,15 @@ def evaluate(model, loader, device):
     return {"mse": mse, "mae": mae, "rmse": rmse}
 
 
-def evaluate_all_test_buildings(model, num_partitions, device):
+def evaluate_all_test_buildings(
+    model, num_partitions, data_dir, seq_len, horizon, device
+):
     """Final test evaluation across all buildings, after FL finishes."""
     results = []
 
     for partition_id in range(num_partitions):
         _, _, testloader = load_data(
-            partition_id, num_partitions, BATCH_SIZE
+            partition_id, num_partitions, data_dir, seq_len, horizon
         )
         metrics = evaluate(model, testloader, device)
         results.append(metrics)

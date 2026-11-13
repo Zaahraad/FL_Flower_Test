@@ -1,4 +1,6 @@
 
+from pathlib import Path
+
 import torch
 
 from flwr.app import ArrayRecord, ConfigRecord, Context
@@ -24,9 +26,13 @@ def main(grid: Grid, context: Context) -> None:
         context.run_config["fraction-evaluate"]
     )
     lr = float(context.run_config["learning-rate"])
+    seq_len = int(context.run_config["seq-len"])
+    horizon = int(context.run_config["horizon"])
+    data_dir = context.run_config["data-dir"]
+    output_dir = Path(context.run_config["output-dir"])
 
     # This example assumes the same model architecture at all clients.
-    global_model = Net()
+    global_model = Net(horizon=horizon)
     initial_arrays = ArrayRecord(global_model.state_dict())
 
     strategy = FedAvg(
@@ -55,6 +61,9 @@ def main(grid: Grid, context: Context) -> None:
     test_metrics = evaluate_all_test_buildings(
         model=global_model,
         num_partitions=num_partitions,
+        data_dir=data_dir,
+        seq_len=seq_len,
+        horizon=horizon,
         device=device,
     )
 
@@ -63,5 +72,7 @@ def main(grid: Grid, context: Context) -> None:
     print(f"MAE:  {test_metrics['mae']:.6f}")
     print(f"RMSE: {test_metrics['rmse']:.6f}")
 
-    torch.save(global_model.state_dict(), "final_model.pt")
-    print("Saved final global model to final_model.pt")
+    output_dir.mkdir(parents=True, exist_ok=True)
+    model_path = output_dir / "final_model.pt"
+    torch.save(global_model.state_dict(), model_path)
+    print(f"Saved final global model to {model_path}")

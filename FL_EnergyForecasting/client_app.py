@@ -18,6 +18,9 @@ def get_data(context):
     trainloader, valloader, _ = load_data(
         partition_id=partition_id,
         num_partitions=num_partitions,
+        data_dir=context.run_config["data-dir"],
+        seq_len=int(context.run_config["seq-len"]),
+        horizon=int(context.run_config["horizon"]),
         batch_size=batch_size,
     )
     return partition_id, trainloader, valloader
@@ -32,7 +35,7 @@ def train_client(msg: Message, context: Context) -> Message:
 
     partition_id, trainloader, _ = get_data(context)
 
-    model = Net()
+    model = Net(horizon=int(context.run_config["horizon"]))
     model.load_state_dict(
         msg.content["arrays"].to_torch_state_dict()
     )
@@ -77,7 +80,7 @@ def evaluate_client(msg: Message, context: Context) -> Message:
 
     partition_id, _, valloader = get_data(context)
 
-    model = Net()
+    model = Net(horizon=int(context.run_config["horizon"]))
     model.load_state_dict(
         msg.content["arrays"].to_torch_state_dict()
     )
